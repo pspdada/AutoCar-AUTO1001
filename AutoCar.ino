@@ -36,163 +36,164 @@ unsigned short PWM_1 = 1500, PWM_2 = 1000;
 
 // 定义引脚
 void pinModeInit() {
-  pinMode(ENCODER_LEFT_A, INPUT);
-  pinMode(ENCODER_LEFT_B, INPUT);
-  pinMode(ENCODER_RIGHT_A, INPUT);
-  pinMode(ENCODER_RIGHT_B, INPUT);
-  pinMode(PWM_LEFT, OUTPUT);
-  pinMode(IN_L1, OUTPUT);
-  pinMode(IN_L2, OUTPUT);
-  pinMode(PWM_RIGHT, OUTPUT);
-  pinMode(IN_R1, OUTPUT);
-  pinMode(IN_R2, OUTPUT);
-  pinMode(CTRT_PIN_R1, INPUT);
-  pinMode(CTRT_PIN_R2, INPUT);
-  pinMode(CTRT_PIN_R3, INPUT);
-  pinMode(CTRT_PIN_L1, INPUT);
-  pinMode(CTRT_PIN_L2, INPUT);
-  pinMode(CTRT_PIN_L3, INPUT);
-  pinMode(CTRT_PIN_M, INPUT);
-  pinMode(TRIG_PIN, OUTPUT);
-  pinMode(ECHO_PIN, INPUT);
-  pinMode(BUTTON_PIN, INPUT);
+    pinMode(ENCODER_LEFT_A, INPUT);
+    pinMode(ENCODER_LEFT_B, INPUT);
+    pinMode(ENCODER_RIGHT_A, INPUT);
+    pinMode(ENCODER_RIGHT_B, INPUT);
+    pinMode(PWM_LEFT, OUTPUT);
+    pinMode(IN_L1, OUTPUT);
+    pinMode(IN_L2, OUTPUT);
+    pinMode(PWM_RIGHT, OUTPUT);
+    pinMode(IN_R1, OUTPUT);
+    pinMode(IN_R2, OUTPUT);
+    pinMode(CTRT_PIN_R1, INPUT);
+    pinMode(CTRT_PIN_R2, INPUT);
+    pinMode(CTRT_PIN_R3, INPUT);
+    pinMode(CTRT_PIN_L1, INPUT);
+    pinMode(CTRT_PIN_L2, INPUT);
+    pinMode(CTRT_PIN_L3, INPUT);
+    pinMode(CTRT_PIN_M, INPUT);
+    pinMode(TRIG_PIN, OUTPUT);
+    pinMode(ECHO_PIN, INPUT);
+    pinMode(BUTTON_PIN, INPUT);
 }
 
 /*---------------------------------------主函数---------------------------------------*/
 void setup() {
-  pinModeInit();
-  TCCR1B = TCCR1B & B11111000 | B00000001;                                  // 9,10 两个管脚的 PWM 由定时器 TIMER1 产生，这句程序改变 PWM 的频率
-  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), buttonPress, RISING);  // 设置21引脚为中断
-  Serial.begin(9600);
-  memset(CTRTstate, 0, sizeof(bool) * CTRT_CNT * MEMORY_CNT);
-  while (car_state != 0) {}  // 等待按下按钮
+    pinModeInit();
+    TCCR1B = TCCR1B & B11111000 | B00000001;                                  // 9,10 两个管脚的 PWM 由定时器 TIMER1 产生，这句程序改变 PWM 的频率
+    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), buttonPress, RISING);  // 设置21引脚为中断
+    Serial.begin(9600);
+    memset(CTRTstate, 0, sizeof(bool) * CTRT_CNT * MEMORY_CNT);
+    while (car_state != 0) {
+    }  // 等待按下按钮
 
-  attachInterrupt(digitalPinToInterrupt(2), getEncoder_L, CHANGE);  // 设置2引脚为中断
-  attachInterrupt(digitalPinToInterrupt(3), getEncoder_R, CHANGE);  // 设置3引脚为中断
+    attachInterrupt(digitalPinToInterrupt(2), getEncoder_L, CHANGE);  // 设置2引脚为中断
+    attachInterrupt(digitalPinToInterrupt(3), getEncoder_R, CHANGE);  // 设置3引脚为中断
 
-  // 剩余可用于中断的引脚：18 19 20
+    // 剩余可用于中断的引脚：18 19 20
 
-  // 舵机初始化
-  servo_1.attach(SERVO_1);  // 将引脚与声明的舵机对象连接起来
-  servo_2.attach(SERVO_2);
-  servo_1.writeMicroseconds(PWM_1);
-  servo_2.writeMicroseconds(PWM_2);
-  delay(500);
-  servoGrap();
-  delay(200);
-  MsTimer2::set(PERIOD, motorControl);  // 计数器：设定每隔PERIOD时间，执行一次motorControl函数
-  MsTimer2::start();                    // 启动计时器
-  time_base_l = millis();
+    // 舵机初始化
+    servo_1.attach(SERVO_1);  // 将引脚与声明的舵机对象连接起来
+    servo_2.attach(SERVO_2);
+    servo_1.writeMicroseconds(PWM_1);
+    servo_2.writeMicroseconds(PWM_2);
+    delay(500);
+    servoGrap();
+    delay(200);
+    MsTimer2::set(PERIOD, motorControl);  // 计数器：设定每隔PERIOD时间，执行一次motorControl函数
+    MsTimer2::start();                    // 启动计时器
+    time_base_l = millis();
 }
 
 void loop() {
-  // 程序的最后一步，在转完半圈后执行
-  if (nowDrop) {
-    nowDrop == 0;
-    MsTimer2::stop();
-    detachInterrupt(digitalPinToInterrupt(2));
-    detachInterrupt(digitalPinToInterrupt(3));
-    detachInterrupt(digitalPinToInterrupt(BUTTON_PIN));
-    analogWrite(PWM_LEFT, 0);
-    analogWrite(PWM_RIGHT, 0);
-    servoDrop();
-    while (true) {
-      analogWrite(PWM_LEFT, 0);
-      analogWrite(PWM_RIGHT, 0);
+    // 程序的最后一步，在转完半圈后执行
+    if (nowDrop) {
+        nowDrop == 0;
+        MsTimer2::stop();
+        detachInterrupt(digitalPinToInterrupt(2));
+        detachInterrupt(digitalPinToInterrupt(3));
+        detachInterrupt(digitalPinToInterrupt(BUTTON_PIN));
+        analogWrite(PWM_LEFT, 0);
+        analogWrite(PWM_RIGHT, 0);
+        servoDrop();
+        while (true) {
+            analogWrite(PWM_LEFT, 0);
+            analogWrite(PWM_RIGHT, 0);
+        }
     }
-  }
 
-  time_now_l = millis();
-  // 每100ms执行一次
-  if (time_now_l - time_base_l >= 100) {
-    time_base_l += 100;
-    // 给Trig发送一个短时间脉冲,触发测距
-    digitalWrite(TRIG_PIN, LOW);                 // 给Trig发送一个低电平
-    delayMicroseconds(2);                        // 等待2微妙
-    digitalWrite(TRIG_PIN, HIGH);                // 给Trig设置高电平
-    delayMicroseconds(10);                       // 等待10微妙
-    digitalWrite(TRIG_PIN, LOW);                 // 给Trig设置低电平
-    temp_time = float(pulseIn(ECHO_PIN, HIGH));  // 存储回波等待时间
-    distance = (temp_time * 17) / 1000;          // 把回波时间换算成cm
-    if (distance < 15 && isBarrier == 0) {
-      time_base_a = millis();
-      isBarrier = 1;
+    time_now_l = millis();
+    // 每100ms执行一次
+    if (time_now_l - time_base_l >= 100) {
+        time_base_l += 100;
+        // 给Trig发送一个短时间脉冲,触发测距
+        digitalWrite(TRIG_PIN, LOW);                 // 给Trig发送一个低电平
+        delayMicroseconds(2);                        // 等待2微妙
+        digitalWrite(TRIG_PIN, HIGH);                // 给Trig设置高电平
+        delayMicroseconds(10);                       // 等待10微妙
+        digitalWrite(TRIG_PIN, LOW);                 // 给Trig设置低电平
+        temp_time = float(pulseIn(ECHO_PIN, HIGH));  // 存储回波等待时间
+        distance = (temp_time * 17) / 1000;          // 把回波时间换算成cm
+        if (distance < 15 && isBarrier == 0) {
+            time_base_a = millis();
+            isBarrier = 1;
+        }
+
+        // 用于调试，打印数据
+        /*
+        Serial.print("Output_L:");
+        Serial.println(Output_L);
+        Serial.print("Output_R:");
+        Serial.println(Output_R);
+
+        Serial.print("cur_V_LEFT:");
+        Serial.println(cur_V_LEFT);
+        Serial.print("cur_V_RIGHT:");
+        Serial.println(cur_V_RIGHT);
+        Serial.print("TARGET_V_LEFT:");
+        Serial.println(TARGET_V_LEFT);
+        Serial.print("TARGET_V_RIGHT:");
+        Serial.println(TARGET_V_RIGHT);
+        Serial.print("\n");
+
+        Serial.print("car_state:");
+        Serial.println(digitalRead(car_state));
+
+        Serial.print("distance:");
+        Serial.println(distance);
+        Serial.print("isBarrier:");
+        Serial.println(isBarrier);
+
+        Serial.print(CTRTstate[0][0]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[1][0]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[2][0]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[3][0]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[4][0]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[5][0]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[6][0]);
+        Serial.print("\t");
+        Serial.print(isCross);
+        Serial.print("\n");
+
+        Serial.print("quarter_turn:");
+        Serial.println(quarter_turn);
+
+        Serial.print(CTRTstate[0][1]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[1][1]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[2][1]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[3][1]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[4][1]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[5][1]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[6][1]);
+        Serial.print("\n");
+        Serial.print(CTRTstate[0][2]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[1][2]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[2][2]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[3][2]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[4][2]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[5][2]);
+        Serial.print("\t");
+        Serial.print(CTRTstate[6][2]);
+        Serial.print("\n");
+        Serial.print("\n");
+        */
     }
-    
-    // 用于调试，打印数据
-    /*
-    Serial.print("Output_L:");
-    Serial.println(Output_L);
-    Serial.print("Output_R:");
-    Serial.println(Output_R);
-    
-    Serial.print("cur_V_LEFT:");
-    Serial.println(cur_V_LEFT);
-    Serial.print("cur_V_RIGHT:");
-    Serial.println(cur_V_RIGHT);
-    Serial.print("TARGET_V_LEFT:");
-    Serial.println(TARGET_V_LEFT);
-    Serial.print("TARGET_V_RIGHT:");
-    Serial.println(TARGET_V_RIGHT);
-    Serial.print("\n");
-    
-    Serial.print("car_state:");
-    Serial.println(digitalRead(car_state));
-    
-    Serial.print("distance:");
-    Serial.println(distance);
-    Serial.print("isBarrier:");
-    Serial.println(isBarrier);
-    
-    Serial.print(CTRTstate[0][0]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[1][0]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[2][0]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[3][0]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[4][0]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[5][0]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[6][0]);
-    Serial.print("\t");
-    Serial.print(isCross);
-    Serial.print("\n");
-    
-    Serial.print("quarter_turn:");
-    Serial.println(quarter_turn);
-
-    Serial.print(CTRTstate[0][1]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[1][1]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[2][1]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[3][1]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[4][1]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[5][1]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[6][1]);
-    Serial.print("\n");
-    Serial.print(CTRTstate[0][2]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[1][2]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[2][2]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[3][2]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[4][2]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[5][2]);
-    Serial.print("\t");
-    Serial.print(CTRTstate[6][2]);
-    Serial.print("\n");
-    Serial.print("\n");
-    */
-  }
 }

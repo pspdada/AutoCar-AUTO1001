@@ -56,26 +56,26 @@
 
 /*---------------------------------数据类型------------------------------*/
 typedef enum run_mode_e {
-  _STOP = 0,         // 停转
-  SLOW_ON,           // 低速前进
-  STRAIGHT_ON,       // 全速直行
-  TURN_LEFT_LOW,     // 低左转
-  TURN_LEFT_MID,     // 中左转
-  TURN_LEFT_HIGH,    // 直角左转
-  TURN_LEFT_HIGH_F,  // 直角左转_快速
-  TURN_RIGHT_LOW,
-  TURN_RIGHT_MID,
-  TURN_RIGHT_HIGH,
-  TURN_RIGHT_HIGH_F,
-  REVERSE,  // 倒车
-  CIRCLE    // 转圈
+    _STOP = 0,         // 停转
+    SLOW_ON,           // 低速前进
+    STRAIGHT_ON,       // 全速直行
+    TURN_LEFT_LOW,     // 低左转
+    TURN_LEFT_MID,     // 中左转
+    TURN_LEFT_HIGH,    // 直角左转
+    TURN_LEFT_HIGH_F,  // 直角左转_快速
+    TURN_RIGHT_LOW,
+    TURN_RIGHT_MID,
+    TURN_RIGHT_HIGH,
+    TURN_RIGHT_HIGH_F,
+    REVERSE,  // 倒车
+    CIRCLE    // 转圈
 } run_mode;
 
 // 判断是否需要直角转弯
 enum quarter_turn_e {
-  NOPE = 0,
-  QT_L,  // 直角左转
-  QT_R,  // 直角右转
+    NOPE = 0,
+    QT_L,  // 直角左转
+    QT_R,  // 直角右转
 };
 
 #endif
