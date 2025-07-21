@@ -1,7 +1,8 @@
+<div align="center">
+
 # AutoCar: 自动化认知与实践课程用自动巡线小车 <!-- omit in toc -->
 
-<div align="center">
-    <b>中文</b> | <a href="/README_en.md">English</a>
+<b>中文</b> | <a href="/README_en.md">English</a>
 </div>
 
 ## Contents <!-- omit in toc -->

@@ -1,7 +1,8 @@
+<div align="center">
+
 # AutoCar: Automated Line-Following Car for AUTO1001 <!-- omit in toc -->
 
-<div align="center">
-    <a href="/README.md">中文</a> | <b>English</b>
+<a href="/README.md">中文</a> | <b>English</b>
 </div>
 
 ## Contents <!-- omit in toc -->
