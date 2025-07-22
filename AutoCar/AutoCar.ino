@@ -79,7 +79,7 @@ void setup() {
     servo_1.writeMicroseconds(PWM_1);
     servo_2.writeMicroseconds(PWM_2);
     delay(500);
-    servoGrap();
+    servoGrab();
     delay(200);
     MsTimer2::set(PERIOD, motorControl);  // 计数器：设定每隔PERIOD时间，执行一次motorControl函数
     MsTimer2::start();                    // 启动计时器

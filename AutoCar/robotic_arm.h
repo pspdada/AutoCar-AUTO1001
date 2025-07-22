@@ -1,7 +1,7 @@
 #ifndef _ROBOTIC_ARM_H
 #define _ROBOTIC_ARM_H
 
-void servoGrap();
+void servoGrab();
 void servoDrop();
 
 extern Servo servo_1;

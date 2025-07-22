@@ -232,7 +232,7 @@ void motorControl(void) {
     f_V_R = TARGET_V_RIGHT;
 }
 
-// 根据小车两轮的目标速度来输出PWM波控制小车
+// 根据小车两轮的目标速度来输出 PWM 波控制小车
 void carRun(void) {
     Output_L = pidController_L(TARGET_V_LEFT, cur_V_LEFT);
     if (TARGET_V_LEFT == 0) {
