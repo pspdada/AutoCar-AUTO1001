@@ -3,6 +3,7 @@
 # AutoCar: Automated Line-Following Car for AUTO1001 <!-- omit in toc -->
 
 <a href="/README.md">中文</a> | <b>English</b>
+
 </div>
 
 ## Contents <!-- omit in toc -->
@@ -12,6 +13,7 @@
 - [Detailed Implementation](#detailed-implementation)
 - [Code Execution Logic](#code-execution-logic)
 - [Usage](#usage)
+- [Project Outcome Showcase](#project-outcome-showcase)
 
 ## Introduction
 
@@ -29,6 +31,8 @@ Development board: Arduino Mega 2560
 Assessment date and score: March 19, 2023 15:00 – 35/35
 
 ## Project Structure
+
+The core code is located in the [`AutoCar`](/AutoCar) folder of this project, and includes the following files:
 
 - `AutoCar_def`
   Defines constants and pins; modify according to your setup.
@@ -68,3 +72,19 @@ The most challenging part of the assessment is the right-angle turn, which easil
 
 - Modify the definitions in `AutoCar_def.h` according to your wiring
 - Upload the code to the development board
+
+## Project Outcome Showcase
+
+Below are the photographs of our completed project. This project, part of the AUTO1001 course, serves as a valuable hands-on learning experience. We hope that through this project, students can gain a deeper understanding of automatic control concepts and successfully complete the project implementation.
+
+<table align="center">
+    <p align="center">
+      <img src="docs/picture1.jpg" width="80%" />
+    </p>
+    <p align="center">
+      <img src="docs/picture2.jpg" width="80%" />
+    </p>
+    <p align="center">
+      <img src="docs/picture3.jpg" width="80%" />
+    </p>
+</table>

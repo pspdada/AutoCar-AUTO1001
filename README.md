@@ -3,6 +3,7 @@
 # AutoCar: 自动化认知与实践课程用自动巡线小车 <!-- omit in toc -->
 
 <b>中文</b> | <a href="/README_en.md">English</a>
+
 </div>
 
 ## 内容 <!-- omit in toc -->
@@ -12,10 +13,11 @@
 - [功能具体实现](#功能具体实现)
 - [代码运行逻辑](#代码运行逻辑)
 - [使用方法](#使用方法)
+- [项目成果展示](#项目成果展示)
 
 ## 简介
 
-本项目是 2022 年哈尔滨工业大学（深圳）AUTO1001 - [自动化认知与实践](https://github.com/HITSZ-OpenAuto/AUTO1001)课程考核项目：*自动巡线小车* 的对应代码，由 [pspdada](https://github.com/pspdada) 编写，提供有需要的同学参考。
+本项目是 2022 年哈尔滨工业大学（深圳）AUTO1001 - [自动化认知与实践](https://github.com/HITSZ-OpenAuto/AUTO1001)课程考核项目：_自动巡线小车_ 的对应代码，由 [pspdada](https://github.com/pspdada) 编写，提供有需要的同学参考。
 
 本次考核包括**竞速**和**避障**两个部分，可用不同代码完成：
 
@@ -27,6 +29,8 @@
 考核时间: 2023.3.19 15:00，分数: 35/35
 
 ## 项目结构
+
+核心代码在本项目的 [`AutoCar`](/AutoCar) 文件夹下，包含以下文件：
 
 - `AutoCar_def`: 定义了一些常量和引脚，根据实际情况修改
 - `control`: 控制小车的运动，包括三个部分
@@ -60,3 +64,19 @@
 
 - 根据实际接线情况修改 `AutoCar_def.h` 文件中的定义
 - 将代码刷入开发板
+
+## 项目成果展示
+
+以下是我们项目完成后的实物照片。AUTO1001 课程的这一项目，是一个具有实践价值的学习项目。我们希望通过这个项目，大家能够深入理解自动控制的相关知识，并顺利完成项目制作。
+
+<table align="center">
+    <p align="center">
+      <img src="docs/picture1.jpg" width="80%" />
+    </p>
+    <p align="center">
+      <img src="docs/picture2.jpg" width="80%" />
+    </p>
+    <p align="center">
+      <img src="docs/picture3.jpg" width="80%" />
+    </p>
+</table>
