@@ -2,7 +2,7 @@
 
 // 根据红外传感器的输出来决定小车运动模式
 uint8_t runMode(void) {
-    if (!isFinish) updateCTRTstate();  // 更新CTRT数据
+    if (!isFinish) updateCTRTState();  // 更新CTRT数据
     /*
     Serial.print(2);
     Serial.print("\t");
@@ -147,7 +147,7 @@ void motorControl(void) {
     Serial.print(1);
     Serial.print("\t");
     */
-    if (!isFinish) updateCTRTstate();  // 更新CTRT数据
+    if (!isFinish) updateCTRTState();  // 更新CTRT数据
     char mode = runMode();
     /*
     Serial.print(3);
@@ -234,7 +234,7 @@ void motorControl(void) {
 
 // 根据小车两轮的目标速度来输出 PWM 波控制小车
 void carRun(void) {
-    Output_L = pidController_L(TARGET_V_LEFT, cur_V_LEFT);
+    Output_L = pidControllerLeft(TARGET_V_LEFT, cur_V_LEFT);
     if (TARGET_V_LEFT == 0) {
         digitalWrite(IN_L1, HIGH);
         digitalWrite(IN_L2, HIGH);
@@ -249,7 +249,7 @@ void carRun(void) {
             analogWrite(PWM_LEFT, abs(Output_L));
         }
     }
-    Output_R = pidController_R(TARGET_V_RIGHT, cur_V_RIGHT);
+    Output_R = pidControllerRight(TARGET_V_RIGHT, cur_V_RIGHT);
     if (TARGET_V_RIGHT == 0) {
         digitalWrite(IN_R1, HIGH);
         digitalWrite(IN_R2, HIGH);

@@ -2,7 +2,7 @@
 
 /*---------------------------------编码器中断函数------------------------*/
 // 获取电机1的编码器值
-void getEncoder_L(void) {
+void getEncoderLeft(void) {
     if (digitalRead(ENCODER_LEFT_A) == LOW) {
         if (digitalRead(ENCODER_LEFT_B) == LOW) {
             encoderVal_LEFT--;
@@ -18,7 +18,7 @@ void getEncoder_L(void) {
     }
 }
 // 获取电机2的编码器值
-void getEncoder_R(void) {
+void getEncoderRight(void) {
     if (digitalRead(ENCODER_RIGHT_A) == LOW) {
         if (digitalRead(ENCODER_RIGHT_B) == LOW) {
             encoderVal_RIGHT--;

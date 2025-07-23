@@ -2,80 +2,83 @@
 #define _AUTOCAR_DEF_H
 
 #include <MsTimer2.h>  // 调用定时器库
-#include <Servo.h>     // 调用Servo.h库
+#include <Servo.h>     // 调用舵机库
 #include <math.h>
 
-#define base_V 16.0  // 基础速度，实力的象征
-#define PERIOD 10    // 周期
+// 基础速度，用于调整小车的整体速度
+#define base_V 16.0
+// 定时器中断周期，单位：毫秒
+#define PERIOD 10
+// 圆周率
 #define PI 3.14159
 
-/*-------------------------------------管脚-------------------------------------*/
-#define ENCODER_LEFT_A 2  // 左轮电机的编码器A项接Arduino的2中断口，用于编码器计数
-#define ENCODER_LEFT_B 4
-#define ENCODER_RIGHT_A 3  // 右轮电机的编码器A项接Arduino的3中断口，用于编码器计数
-#define ENCODER_RIGHT_B 5
-#define PWM_LEFT 9  // 用于左轮电机的PWM输出，调节电机速度
-#define IN_L1 12    // 11、12引脚用于左轮电机的转动方向控制
-#define IN_L2 11
-#define PWM_RIGHT 10  // 用于右轮电机的PWM输出，调节电机速度
-#define IN_R1 6       // 6和8引脚用于右轮电机的转动方向控制
-#define IN_R2 8
+/*-------------------------------------引脚定义-------------------------------------*/
+// 编码器引脚
+#define ENCODER_LEFT_A 2   // 左轮电机编码器A相，中断引脚
+#define ENCODER_LEFT_B 4   // 左轮电机编码器B相
+#define ENCODER_RIGHT_A 3  // 右轮电机编码器A相，中断引脚
+#define ENCODER_RIGHT_B 5  // 右轮电机编码器B相
 
-// 7个光电寻迹模块
-#define CTRT_CNT 7
-#define CTRT_PIN_L3 30  // 左红外
-#define CTRT_PIN_L2 24
-#define CTRT_PIN_L1 16
-#define CTRT_PIN_M 17   // 中红外
-#define CTRT_PIN_R1 18  // 右红外
-#define CTRT_PIN_R2 19
-#define CTRT_PIN_R3 20
+// 电机驱动引脚
+#define PWM_LEFT 9    // 左轮电机PWM控制引脚，用于调节电机速度
+#define IN_L1 12      // 左轮电机方向控制引脚1
+#define IN_L2 11      // 左轮电机方向控制引脚2
+#define PWM_RIGHT 10  // 右轮电机PWM控制引脚，用于调节电机速度
+#define IN_R1 6       // 右轮电机方向控制引脚1
+#define IN_R2 8       // 右轮电机方向控制引脚2
 
-// 2个舵机
-// 由于机械原因，机械臂的参数可能会变，需要及时调整
-#define SERVO_CNT 2
-#define SERVO_1 13  // 底部舵机 可用范围：1500-2500 增大时向后放倒，1500初始竖直位置，2500水平位置
-#define SERVO_2 7   // 顶部舵机 可用范围：1000-1500 增大时夹紧，1000初始位置，1500夹紧位置
+// 红外寻迹模块引脚
+#define CTRT_CNT 7      // 红外寻迹模块数量
+#define CTRT_PIN_L3 30  // 左侧最外侧红外传感器
+#define CTRT_PIN_L2 24  // 左侧第二个红外传感器
+#define CTRT_PIN_L1 16  // 左侧第三个红外传感器
+#define CTRT_PIN_M 17   // 中间红外传感器
+#define CTRT_PIN_R1 18  // 右侧第三个红外传感器
+#define CTRT_PIN_R2 19  // 右侧第二个红外传感器
+#define CTRT_PIN_R3 20  // 右侧最外侧红外传感器
 
-// 测距模块
-#define TRIG_PIN 26  // 引脚Trig触发控制信号输入
-#define ECHO_PIN 28  // 引脚Echo回响信号输出
+// 舵机引脚
+#define SERVO_CNT 2  // 舵机数量
+#define SERVO_1 13   // 底部舵机，控制机械臂上下运动
+#define SERVO_2 7    // 顶部舵机，控制夹爪开合
 
-#define BUTTON_PIN 21  // 按钮，按下为LOW，松开为HIGH
+// 测距模块引脚
+#define TRIG_PIN 26  // 测距模块Trig引脚，触发信号输入
+#define ECHO_PIN 28  // 测距模块Echo引脚，回响信号输出
 
-/*---------------------------------定义常值-------------------------------*/
-// PID参数
-#define Kp_L 10.0
-#define Ki_L 20.0
-#define Kd_L 0.05
-#define Kp_R 10.0
-#define Ki_R 20.0
-#define Kd_R 0.05
+// 按键引脚
+#define BUTTON_PIN 21  // 按钮引脚，用于启动/停止小车
 
-#define MEMORY_CNT 4  // CTRT的记忆层数
+/*---------------------------------PID参数-------------------------------*/
+// 左轮PID参数
+#define Kp_L 10.0  // 比例增益
+#define Ki_L 20.0  // 积分增益
+#define Kd_L 0.05  // 微分增益
 
-/*---------------------------------数据类型------------------------------*/
-typedef enum run_mode_e {
-    _STOP = 0,         // 停转
-    SLOW_ON,           // 低速前进
-    STRAIGHT_ON,       // 全速直行
-    TURN_LEFT_LOW,     // 低左转
-    TURN_LEFT_MID,     // 中左转
-    TURN_LEFT_HIGH,    // 直角左转
-    TURN_LEFT_HIGH_F,  // 直角左转_快速
-    TURN_RIGHT_LOW,
-    TURN_RIGHT_MID,
-    TURN_RIGHT_HIGH,
-    TURN_RIGHT_HIGH_F,
-    REVERSE,  // 倒车
-    CIRCLE    // 转圈
+// 右轮PID参数
+#define Kp_R 10.0  // 比例增益
+#define Ki_R 20.0  // 积分增益
+#define Kd_R 0.05  // 微分增益
+
+// 红外传感器记忆层数
+#define MEMORY_CNT 4
+
+/*---------------------------------数据类型定义------------------------------*/
+// 运行模式枚举
+typedef enum {
+    _STOP = 0,          // 停转
+    SLOW_ON,            // 低速前进
+    STRAIGHT_ON,        // 全速直行
+    TURN_LEFT_LOW,      // 低速左转
+    TURN_LEFT_MID,      // 中速左转
+    TURN_LEFT_HIGH,     // 高速左转
+    TURN_LEFT_HIGH_F,   // 快速左转
+    TURN_RIGHT_LOW,     // 低速右转
+    TURN_RIGHT_MID,     // 中速右转
+    TURN_RIGHT_HIGH,    // 高速右转
+    TURN_RIGHT_HIGH_F,  // 快速右转
+    REVERSE,            // 倒车
+    CIRCLE              // 转圈
 } run_mode;
-
-// 判断是否需要直角转弯
-enum quarter_turn_e {
-    NOPE = 0,
-    QT_L,  // 直角左转
-    QT_R,  // 直角右转
-};
 
 #endif

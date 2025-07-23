@@ -68,8 +68,8 @@ void setup() {
     while (car_state != 0) {
     }  // 等待按下按钮
 
-    attachInterrupt(digitalPinToInterrupt(2), getEncoder_L, CHANGE);  // 设置2引脚为中断
-    attachInterrupt(digitalPinToInterrupt(3), getEncoder_R, CHANGE);  // 设置3引脚为中断
+    attachInterrupt(digitalPinToInterrupt(2), getEncoderLeft, CHANGE);   // 设置2引脚为中断
+    attachInterrupt(digitalPinToInterrupt(3), getEncoderRight, CHANGE);  // 设置3引脚为中断
 
     // 剩余可用于中断的引脚：18 19 20
 
